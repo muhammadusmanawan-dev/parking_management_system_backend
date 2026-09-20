@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
 
     'users',
+    'customers',
     'vehicles',
     'parking_spots',
     'tickets',
