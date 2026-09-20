@@ -1,3 +1,22 @@
 from django.db import models
 
-# Create your models here.
+from customers.models import Customer
+
+
+class Vehicle(models.Model):
+    VEHICLE_TYPE_CHOICES = [
+        ("car", "Car"),
+        ("motorcycle", "Motorcycle"),
+        ("truck", "Truck"),
+        ("van", "Van"),
+        ("bus", "Bus"),
+    ]
+
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="vehicles")
+    license_plate = models.CharField(max_length=20, unique=True)
+    vehicle_type = models.CharField(max_length=20, choices=VEHICLE_TYPE_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.license_plate
