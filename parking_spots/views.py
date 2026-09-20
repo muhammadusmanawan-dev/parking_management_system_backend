@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
+from .models import ParkingSpot
+from .serializers import ParkingSpotSerializer
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+class ParkingSpotViewSet(ModelViewSet):
+    queryset = ParkingSpot.objects.all()
+    serializer_class = ParkingSpotSerializer
+    permission_classes = [IsAuthenticated]
+    
