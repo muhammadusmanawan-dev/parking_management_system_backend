@@ -43,3 +43,4 @@ class TicketSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"vehicle": ("This vehicle already has an active ticket.")})
         
         return attrs
+    
