@@ -9,7 +9,7 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
 
-        #Provide: ticket, payment_method
+        # Provide: ticket, payment_method
         fields = [
             "id",
             "ticket",
@@ -47,12 +47,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
         if Payment.objects.filter(ticket=ticket).exists():
             raise serializers.ValidationError(
-                {
-                    "ticket": (
-                        "A payment already exists for this ticket."
-                    )
-                }
+                {"ticket": ("A payment already exists for this ticket.")}
             )
 
         return attrs
-    

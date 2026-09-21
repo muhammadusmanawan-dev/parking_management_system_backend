@@ -16,4 +16,3 @@ class ParkingSpotAdmin(admin.ModelAdmin):
 
     search_fields = ("spot_number", "spot_type", "status")
     list_filter = ("spot_type", "status", "created_at", "updated_at")
-    

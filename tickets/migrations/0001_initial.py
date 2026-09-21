@@ -9,22 +9,51 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('parking_spots', '0003_alter_parkingspot_spot_type'),
-        ('vehicles', '0001_initial'),
+        ("parking_spots", "0003_alter_parkingspot_spot_type"),
+        ("vehicles", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('entry_time', models.DateTimeField(auto_now_add=True)),
-                ('exit_time', models.DateTimeField(blank=True, null=True)),
-                ('status', models.CharField(choices=[('active', 'Active'), ('completed', 'Completed')], default='active', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('parking_spot', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='tickets', to='parking_spots.parkingspot')),
-                ('vehicle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='vehicles.vehicle')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("entry_time", models.DateTimeField(auto_now_add=True)),
+                ("exit_time", models.DateTimeField(blank=True, null=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("active", "Active"), ("completed", "Completed")],
+                        default="active",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "parking_spot",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="tickets",
+                        to="parking_spots.parkingspot",
+                    ),
+                ),
+                (
+                    "vehicle",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tickets",
+                        to="vehicles.vehicle",
+                    ),
+                ),
             ],
         ),
     ]

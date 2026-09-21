@@ -9,19 +9,46 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('customers', '0002_remove_customer_address'),
+        ("customers", "0002_remove_customer_address"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Vehicle',
+            name="Vehicle",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('license_plate', models.CharField(max_length=20, unique=True)),
-                ('vehicle_type', models.CharField(choices=[('car', 'Car'), ('motorcycle', 'Motorcycle'), ('truck', 'Truck'), ('van', 'Van'), ('bus', 'Bus')], max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='vehicles', to='customers.customer')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("license_plate", models.CharField(max_length=20, unique=True)),
+                (
+                    "vehicle_type",
+                    models.CharField(
+                        choices=[
+                            ("car", "Car"),
+                            ("motorcycle", "Motorcycle"),
+                            ("truck", "Truck"),
+                            ("van", "Van"),
+                            ("bus", "Bus"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="vehicles",
+                        to="customers.customer",
+                    ),
+                ),
             ],
         ),
     ]

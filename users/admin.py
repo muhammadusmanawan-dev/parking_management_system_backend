@@ -23,4 +23,3 @@ class CustomUserAdmin(UserAdmin):
         "created_at",
         "updated_at",
     )
-    

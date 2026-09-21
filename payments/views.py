@@ -27,19 +27,37 @@ class PaymentListCreateView(APIView):
         try:
             amount = FareService.calculate_fare(ticket)
             service = PaymentServiceFactory.get_service(payment_method)
-            result = service.create_payment(amount=amount, currency="PKR", reference=f"TICKET-{ticket.id}")
+            result = service.create_payment(
+                amount=amount, currency="PKR", reference=f"TICKET-{ticket.id}"
+            )
         except NotImplementedError as error:
-            return Response({"detail": str(error)}, status=status.HTTP_501_NOT_IMPLEMENTED)
+            return Response(
+                {"detail": str(error)}, status=status.HTTP_501_NOT_IMPLEMENTED
+            )
         except Exception as error:
-            return Response({"detail": "Payment provider request failed.", "error": str(error)}, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(
+                {"detail": "Payment provider request failed.", "error": str(error)},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         provider_status = result.get("status")
         payment_status = "paid" if provider_status == "succeeded" else "pending"
         paid_at = timezone.now() if provider_status == "succeeded" else None
 
-        payment = Payment.objects.create(ticket=ticket, amount=amount, currency="PKR", payment_method=payment_method, status=payment_status, provider_payment_id=result["payment_id"], paid_at=paid_at)
+        payment = Payment.objects.create(
+            ticket=ticket,
+            amount=amount,
+            currency="PKR",
+            payment_method=payment_method,
+            status=payment_status,
+            provider_payment_id=result["payment_id"],
+            paid_at=paid_at,
+        )
 
-        return Response({"payment": PaymentSerializer(payment).data, "provider": result}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"payment": PaymentSerializer(payment).data, "provider": result},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class PaymentDetailView(APIView):
@@ -61,9 +79,14 @@ class PaymentStatusView(APIView):
         try:
             result = service.check_payment_status(payment.provider_payment_id)
         except NotImplementedError as error:
-            return Response({"detail": str(error)}, status=status.HTTP_501_NOT_IMPLEMENTED)
+            return Response(
+                {"detail": str(error)}, status=status.HTTP_501_NOT_IMPLEMENTED
+            )
         except Exception as error:
-            return Response({"detail": "Payment provider request failed.", "error": str(error)}, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(
+                {"detail": "Payment provider request failed.", "error": str(error)},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         provider_status = result.get("status")
 
@@ -75,4 +98,7 @@ class PaymentStatusView(APIView):
 
         payment.save(update_fields=["status", "paid_at", "updated_at"])
 
-        return Response({"payment": PaymentSerializer(payment).data, "provider": result}, status=status.HTTP_200_OK)
+        return Response(
+            {"payment": PaymentSerializer(payment).data, "provider": result},
+            status=status.HTTP_200_OK,
+        )

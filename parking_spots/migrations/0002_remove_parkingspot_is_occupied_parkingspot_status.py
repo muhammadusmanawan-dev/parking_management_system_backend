@@ -6,17 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('parking_spots', '0001_initial'),
+        ("parking_spots", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='parkingspot',
-            name='is_occupied',
+            model_name="parkingspot",
+            name="is_occupied",
         ),
         migrations.AddField(
-            model_name='parkingspot',
-            name='status',
-            field=models.CharField(choices=[('available', 'Available'), ('occupied', 'Occupied'), ('reserved', 'Reserved')], default='available', max_length=20),
+            model_name="parkingspot",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("available", "Available"),
+                    ("occupied", "Occupied"),
+                    ("reserved", "Reserved"),
+                ],
+                default="available",
+                max_length=20,
+            ),
         ),
     ]

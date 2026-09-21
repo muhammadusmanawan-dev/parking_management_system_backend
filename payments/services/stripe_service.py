@@ -30,12 +30,9 @@ class StripePaymentService(PaymentService):
     def check_payment_status(self, payment_id):
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
-        payment_intent = stripe.PaymentIntent.retrieve(
-            payment_id
-        )
+        payment_intent = stripe.PaymentIntent.retrieve(payment_id)
 
         return {
             "payment_id": payment_intent.id,
             "status": payment_intent.status,
         }
-    
