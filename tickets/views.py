@@ -1,4 +1,6 @@
 from django.db import transaction
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -28,4 +30,38 @@ class TicketListCreateView(APIView):
             parking_spot.status="occupied"
             parking_spot.save(update_fields=["status","updated_at"])
             return Response(TicketSerializer(ticket).data,status=status.HTTP_201_CREATED)
+        
+class TicketDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, ticket_id):
+        ticket = get_object_or_404(Ticket,id=ticket_id,)
+        serializer = TicketSerializer(ticket)
+        return Response(serializer.data,status=status.HTTP_200_OK,)
+    
+
+class TicketCheckoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, ticket_id):
+        ticket = get_object_or_404(
+            Ticket,
+            id=ticket_id,
+        )
+
+        if ticket.status != "active":
+            return Response({"detail": ("This ticket has already been completed.")},status=status.HTTP_400_BAD_REQUEST,)
+
+        with transaction.atomic():
+            ticket.exit_time = timezone.now()
+            ticket.status = "completed"
+
+            ticket.save(update_fields=["exit_time","status","updated_at",])
+
+            parking_spot = ticket.parking_spot
+            parking_spot.status = "available"
+
+            parking_spot.save(update_fields=["status","updated_at",])
+
+        return Response(TicketSerializer(ticket).data,status=status.HTTP_200_OK,)
     
