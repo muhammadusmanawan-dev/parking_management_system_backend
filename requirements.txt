@@ -1,3 +1,5 @@
 # Core Framework
 Django>=5.0,<6.0
 djangorestframework
+dotenv
+stripe
