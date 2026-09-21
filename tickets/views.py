@@ -37,4 +37,3 @@ class TicketDetailView(APIView):
         ticket=get_object_or_404(Ticket,id=ticket_id)
         serializer=TicketSerializer(ticket)
         return Response(serializer.data,status=status.HTTP_200_OK)
-    
