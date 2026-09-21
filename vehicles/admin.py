@@ -19,6 +19,4 @@ class VehicleAdmin(admin.ModelAdmin):
         "customer__phone_number",
     )
 
-    list_filter = (
-        "vehicle_type",
-    )
+    list_filter = ("vehicle_type",)

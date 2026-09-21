@@ -12,7 +12,9 @@ class Vehicle(models.Model):
         ("bus", "Bus"),
     ]
 
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="vehicles")
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, related_name="vehicles"
+    )
     license_plate = models.CharField(max_length=20, unique=True)
     vehicle_type = models.CharField(max_length=20, choices=VEHICLE_TYPE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)

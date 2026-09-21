@@ -10,4 +10,3 @@ class PaymentService(ABC):
     @abstractmethod
     def check_payment_status(self, payment_id):
         pass
-    

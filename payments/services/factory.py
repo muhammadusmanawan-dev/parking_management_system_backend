@@ -13,6 +13,4 @@ class PaymentServiceFactory:
         if payment_method == "safepay":
             return SafepayPaymentService()
 
-        raise ValueError(
-            "Unsupported payment method."
-        )
+        raise ValueError("Unsupported payment method.")

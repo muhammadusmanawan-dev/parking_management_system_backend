@@ -18,4 +18,3 @@ class FareService:
             hours += 1
 
         return cls.HOURLY_RATE * hours
-    

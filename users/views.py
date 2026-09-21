@@ -7,7 +7,6 @@ from rest_framework.views import APIView
 
 from .serializers import LoginSerializer, UserSerializer
 
-
 User = get_user_model()
 
 
@@ -27,6 +26,7 @@ class LoginView(APIView):
             status=status.HTTP_200_OK,
         )
 
+
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -34,4 +34,3 @@ class MeView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-

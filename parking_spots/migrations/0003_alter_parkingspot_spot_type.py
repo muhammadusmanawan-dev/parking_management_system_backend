@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('parking_spots', '0002_remove_parkingspot_is_occupied_parkingspot_status'),
+        ("parking_spots", "0002_remove_parkingspot_is_occupied_parkingspot_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='parkingspot',
-            name='spot_type',
-            field=models.CharField(choices=[('car', 'Car'), ('motorcycle', 'Motorcycle'), ('truck', 'Truck'), ('van', 'Van'), ('bus', 'Bus')], max_length=20),
+            model_name="parkingspot",
+            name="spot_type",
+            field=models.CharField(
+                choices=[
+                    ("car", "Car"),
+                    ("motorcycle", "Motorcycle"),
+                    ("truck", "Truck"),
+                    ("van", "Van"),
+                    ("bus", "Bus"),
+                ],
+                max_length=20,
+            ),
         ),
     ]
