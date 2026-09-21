@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -28,4 +29,12 @@ class TicketListCreateView(APIView):
             parking_spot.status="occupied"
             parking_spot.save(update_fields=["status","updated_at"])
             return Response(TicketSerializer(ticket).data,status=status.HTTP_201_CREATED)
+        
+class TicketDetailView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self, request,ticket_id):
+        ticket=get_object_or_404(Ticket,id=ticket_id)
+        serializer=TicketSerializer(ticket)
+        return Response(serializer.data,status=status.HTTP_200_OK)
     
