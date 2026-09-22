@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from tickets.models import Ticket
+from tickets.models import Ticket, TicketStatus
 
 from .models import Payment
 
@@ -35,7 +35,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         ]
 
     def validate_ticket(self, ticket):
-        if ticket.status != "completed":
+        if ticket.status != TicketStatus.COMPLETED:
             raise serializers.ValidationError(
                 "Payment can only be created for a completed ticket."
             )

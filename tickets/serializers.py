@@ -3,8 +3,8 @@ from rest_framework import serializers
 from parking_spots.models import ParkingSpot
 from vehicles.models import Vehicle
 
-from .models import Ticket
-
+from .models import Ticket, TicketStatus
+from parking_spots.models import ParkingSpot, ParkingSpotStatus 
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,14 +34,14 @@ class TicketSerializer(serializers.ModelSerializer):
         vehicle = attrs.get("vehicle")
         parking_spot = attrs.get("parking_spot")
 
-        if parking_spot.status != "available":
+        if parking_spot.status != ParkingSpotStatus.AVAILABLE:
             raise serializers.ValidationError(
                 {"parking_spot": ("This parking spot is not available.")}
             )
 
         active_ticket = Ticket.objects.filter(
             vehicle=vehicle,
-            status="active",
+            status=TicketStatus.ACTIVE,
         ).exists()
 
         if active_ticket:

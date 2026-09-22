@@ -1,18 +1,15 @@
 from django.db import models
 from tickets.models import Ticket
 
+class PaymentMethod(models.TextChoices):
+    STRIPE="stripe","Stripe"
+    SAFEPAY="safepay","Safepay"
 
+class PaymentStatus(models.TextChoices):
+    PENDING="pending", "Pending"
+    PAID="paid", "Paid"
+    FAILED="failed", "Failed"
 class Payment(models.Model):
-    PAYMENT_METHOD_CHOICES = [
-        ("stripe", "Stripe"),
-        ("safepay", "Safepay"),
-    ]
-
-    STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("paid", "Paid"),
-        ("failed", "Failed"),
-    ]
 
     ticket = models.OneToOneField(
         Ticket,
@@ -30,12 +27,12 @@ class Payment(models.Model):
 
     payment_method = models.CharField(
         max_length=20,
-        choices=PAYMENT_METHOD_CHOICES,
+        choices=PaymentMethod.choices, default=PaymentMethod.STRIPE
     )
     status = models.CharField(
         max_length=20,
-        choices=STATUS_CHOICES,
-        default="pending",
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.PENDING,
     )
 
     provider_payment_id = models.CharField(
