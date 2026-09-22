@@ -2,7 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from parking_spots.models import ParkingSpotStatus
-from .models import TicketStatus
+from tickets.models import TicketStatus
 
 class TicketService:
 

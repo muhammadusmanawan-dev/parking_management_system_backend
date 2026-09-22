@@ -1,8 +1,5 @@
 from rest_framework import serializers
 
-from parking_spots.models import ParkingSpot
-from vehicles.models import Vehicle
-
 from .models import Ticket, TicketStatus
 from parking_spots.models import ParkingSpot, ParkingSpotStatus 
 

@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from .models import Ticket, TicketStatus
 from .serializers import TicketSerializer
-from .services import TicketService
+from .services.ticket_service import TicketService
 
 
 class TicketListCreateView(APIView):
