@@ -1,25 +1,23 @@
 from django.db import models
 
+class ParkingSpotStatus(models.TextChoices):
+    AVAILABLE="available","Available"
+    OCCUPIED="occupied","Occupied"
+    RESERVED="reserved","Reserved"
 
+class ParkingSpotType(models.TextChoices):
+      CAR="car", "Car"
+      MOTORCYCLE="motorcycle", "Motorcycle"
+      TRUCK="truck", "Truck"
+      VAN="van", "Van"
+      BUS="bus", "Bus"
 class ParkingSpot(models.Model):
-    SPOT_TYPE_CHOICES = [
-        ("car", "Car"),
-        ("motorcycle", "Motorcycle"),
-        ("truck", "Truck"),
-        ("van", "Van"),
-        ("bus", "Bus"),
-    ]
 
     spot_number = models.CharField(max_length=10, unique=True)
-    spot_type = models.CharField(max_length=20, choices=SPOT_TYPE_CHOICES)
+    spot_type = models.CharField(max_length=20, choices=ParkingSpotType.choices)
 
-    SPOT_STATUS_CHOICES = [
-        ("available", "Available"),
-        ("occupied", "Occupied"),
-        ("reserved", "Reserved"),
-    ]
     status = models.CharField(
-        max_length=20, choices=SPOT_STATUS_CHOICES, default="available"
+        max_length=20, choices=ParkingSpotStatus.choices, default=ParkingSpotStatus.AVAILABLE
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

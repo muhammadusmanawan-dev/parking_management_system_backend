@@ -9,12 +9,10 @@ class CustomerAdmin(admin.ModelAdmin):
         "id",
         "name",
         "phone_number",
-        "email",
         "created_at",
     )
 
     search_fields = (
         "name",
         "phone_number",
-        "email",
     )

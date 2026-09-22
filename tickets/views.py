@@ -7,10 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Ticket
+from .models import Ticket, TicketStatus
 from .serializers import TicketSerializer
 
-
+from parking_spots.models import ParkingSpot, ParkingSpotStatus
 class TicketListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -26,7 +26,7 @@ class TicketListCreateView(APIView):
         with transaction.atomic():
             ticket = serializer.save()
             parking_spot = ticket.parking_spot
-            parking_spot.status = "occupied"
+            parking_spot.status = ParkingSpotStatus.OCCUPIED
             parking_spot.save(update_fields=["status", "updated_at"])
             return Response(
                 TicketSerializer(ticket).data, status=status.HTTP_201_CREATED
@@ -57,7 +57,7 @@ class TicketCheckoutView(APIView):
             id=ticket_id,
         )
 
-        if ticket.status != "active":
+        if ticket.status != TicketStatus.ACTIVE:
             return Response(
                 {"detail": ("This ticket has already been completed.")},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -65,7 +65,7 @@ class TicketCheckoutView(APIView):
 
         with transaction.atomic():
             ticket.exit_time = timezone.now()
-            ticket.status = "completed"
+            ticket.status = TicketStatus.COMPLETED
 
             ticket.save(
                 update_fields=[
@@ -76,7 +76,7 @@ class TicketCheckoutView(APIView):
             )
 
             parking_spot = ticket.parking_spot
-            parking_spot.status = "available"
+            parking_spot.status = ParkingSpotStatus.AVAILABLE
 
             parking_spot.save(
                 update_fields=[

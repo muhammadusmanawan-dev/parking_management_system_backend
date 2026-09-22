@@ -8,6 +8,7 @@ from .models import Payment
 from .serializers import PaymentSerializer
 from .services.fare_service import FareService
 from .services.factory import PaymentServiceFactory
+from .models import PaymentStatus  
 
 
 class PaymentListCreateView(APIView):
@@ -41,7 +42,7 @@ class PaymentListCreateView(APIView):
             )
 
         provider_status = result.get("status")
-        payment_status = "paid" if provider_status == "succeeded" else "pending"
+        payment_status = PaymentStatus.PAID if provider_status == "succeeded" else PaymentStatus.PENDING
         paid_at = timezone.now() if provider_status == "succeeded" else None
 
         payment = Payment.objects.create(
@@ -91,12 +92,12 @@ class PaymentStatusView(APIView):
         provider_status = result.get("status")
 
         if provider_status == "succeeded":
-            payment.status = "paid"
+            payment.status = PaymentStatus.PAID
             payment.paid_at = payment.paid_at or timezone.now()
         elif provider_status in ["failed", "canceled"]:
-            payment.status = "failed"
+            payment.status = PaymentStatus.FAILED
 
-        payment.save(update_fields=["status", "paid_at", "updated_at"])
+        payment.save(update_fields=["status", "paid_at"])
 
         return Response(
             {"payment": PaymentSerializer(payment).data, "provider": result},
