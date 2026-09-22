@@ -1,6 +1,4 @@
-from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -9,8 +7,9 @@ from rest_framework.views import APIView
 
 from .models import Ticket, TicketStatus
 from .serializers import TicketSerializer
+from .services import TicketService
 
-from parking_spots.models import ParkingSpot, ParkingSpotStatus
+
 class TicketListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -19,20 +18,15 @@ class TicketListCreateView(APIView):
         serializer = TicketSerializer(tickets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request):
+    def post(self,request):
         serializer = TicketSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        ticket = TicketService.create_ticket(serializer)
 
-        with transaction.atomic():
-            ticket = serializer.save()
-            parking_spot = ticket.parking_spot
-            parking_spot.status = ParkingSpotStatus.OCCUPIED
-            parking_spot.save(update_fields=["status", "updated_at"])
-            return Response(
-                TicketSerializer(ticket).data, status=status.HTTP_201_CREATED
-            )
-
-
+        return Response(
+            TicketSerializer(ticket).data,
+            status=status.HTTP_201_CREATED,
+        )
 class TicketDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -57,32 +51,13 @@ class TicketCheckoutView(APIView):
             id=ticket_id,
         )
 
-        if ticket.status != TicketStatus.ACTIVE:
+        try:
+            ticket = TicketService.checkout_ticket(ticket)
+
+        except ValueError as error:
             return Response(
-                {"detail": ("This ticket has already been completed.")},
+                {"detail": str(error)},
                 status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        with transaction.atomic():
-            ticket.exit_time = timezone.now()
-            ticket.status = TicketStatus.COMPLETED
-
-            ticket.save(
-                update_fields=[
-                    "exit_time",
-                    "status",
-                    "updated_at",
-                ]
-            )
-
-            parking_spot = ticket.parking_spot
-            parking_spot.status = ParkingSpotStatus.AVAILABLE
-
-            parking_spot.save(
-                update_fields=[
-                    "status",
-                    "updated_at",
-                ]
             )
 
         return Response(
