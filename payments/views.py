@@ -27,21 +27,11 @@ class PaymentListCreateView(APIView):
 
         ticket = serializer.validated_data["ticket"]
         payment_method = serializer.validated_data["payment_method"]
-
-        try:
-            payment, result = PaymentManager.create_payment(
-                ticket=ticket,
-                payment_method=payment_method,
-            )
-
-        except Exception as error:
-            return Response(
-                {
-                    "detail": "Payment provider request failed.",
-                    "error": str(error),
-                },
-                status=status.HTTP_502_BAD_GATEWAY,
-            )
+        
+        payment, result = PaymentManager.create_payment(
+            ticket=ticket,
+            payment_method=payment_method,
+        )
 
         return Response(
             {
@@ -77,20 +67,10 @@ class PaymentStatusView(APIView):
             id=payment_id,
         )
 
-        try:
-            payment, result = PaymentManager.check_payment_status(
-                payment
-            )
-
-        except Exception as error:
-            return Response(
-                {
-                    "detail": "Payment provider request failed.",
-                    "error": str(error),
-                },
-                status=status.HTTP_502_BAD_GATEWAY,
-            )
-
+        payment, result = PaymentManager.check_payment_status(
+            payment
+        )
+        
         return Response(
             {
                 "payment": PaymentSerializer(payment).data,

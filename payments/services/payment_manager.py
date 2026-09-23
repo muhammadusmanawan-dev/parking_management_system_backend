@@ -3,12 +3,15 @@ from django.utils import timezone
 from ..models import Payment, PaymentStatus
 from .fare_service import FareService
 from .factory import PaymentServiceFactory
-
+from config.exception import PaymentAlreadyExists
 
 class PaymentManager:
 
     @staticmethod
     def create_payment(ticket, payment_method):
+        if Payment.objects.filter(ticket=ticket).exists():
+            raise PaymentAlreadyExists()    
+            
         amount = FareService.calculate_fare(ticket)
 
         service = PaymentServiceFactory.get_service(payment_method)
@@ -47,7 +50,7 @@ class PaymentManager:
 
     @staticmethod
     def check_payment_status(payment):
-        service = PaymentServiceFactory.get_service(Payment.payment_method)
+        service = PaymentServiceFactory.get_service(payment.payment_method)
         result = service.check_payment_status(payment.provider_payment_id)
         provider_status = result.get("status")
 

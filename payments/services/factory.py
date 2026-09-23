@@ -1,6 +1,6 @@
 from .safepay_service import SafepayPaymentService
 from .stripe_service import StripePaymentService
-
+from config.exception import UnsupportedPaymentMethod
 
 class PaymentServiceFactory:
 
@@ -13,4 +13,4 @@ class PaymentServiceFactory:
         if payment_method == "safepay":
             return SafepayPaymentService()
 
-        raise ValueError("Unsupported payment method.")
+        raise UnsupportedPaymentMethod()

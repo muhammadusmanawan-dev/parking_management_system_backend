@@ -68,24 +68,36 @@ class ParkingEntryView(APIView):
         result = TicketEntryService.create_entry(
             **serializer.validated_data
         )
-        
-        return Response( { "message": "Vehicle entered successfully.",
-                           "customer": { 
-                               "id": result["customer"].id, 
-                               "name": result["customer"].name, 
-                               "phone_number": result["customer"].phone_number, }, 
-                            "vehicle": {
-                                "id": result["vehicle"].id, 
-                                "license_plate": result["vehicle"].license_plate, 
-                                "vehicle_type": result["vehicle"].vehicle_type, }, 
-                            "parking_spot": {
-                                 "id": result["parking_spot"].id, 
-                                 "spot_number": result["parking_spot"].spot_number, 
-                                 "spot_type": result["parking_spot"].spot_type, 
-                                 "status": result["parking_spot"].status, }, 
-                            "ticket": { 
-                                "id": result["ticket"].id, 
-                                "entry_time": result["ticket"].entry_time, 
-                                "status": result["ticket"].status, },
-                            }, 
-                            status=status.HTTP_201_CREATED, )
+        customer = result["customer"]
+        vehicle = result["vehicle"]
+        parking_spot = result["parking_spot"]
+        ticket = result["ticket"]
+
+        response_data = {
+                    "message": "Vehicle entered successfully.",
+                    "customer": {
+                        "id": customer.id,
+                        "name": customer.name,
+                        "phone_number": customer.phone_number,
+                    },
+                    "vehicle": {
+                        "id": vehicle.id,
+                        "license_plate": vehicle.license_plate,
+                        "vehicle_type": vehicle.vehicle_type,
+                    },
+                    "parking_spot": {
+                        "id": parking_spot.id,
+                        "spot_number": parking_spot.spot_number,
+                        "spot_type": parking_spot.spot_type,
+                        "status": parking_spot.status,
+                    },
+                    "ticket": {
+                        "id": ticket.id,
+                        "entry_time": ticket.entry_time,
+                        "status": ticket.status,
+                    },
+                }
+        return Response(
+            response_data,
+            status=status.HTTP_201_CREATED,
+        )
