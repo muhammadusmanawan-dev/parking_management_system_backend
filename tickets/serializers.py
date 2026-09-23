@@ -9,6 +9,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
         fields = [
             "id",
+            "customer",
             "vehicle",
             "parking_spot",
             "entry_time",

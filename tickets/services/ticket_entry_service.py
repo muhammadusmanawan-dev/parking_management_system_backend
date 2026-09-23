@@ -23,15 +23,9 @@ class TicketEntryService:
         vehicle, vehicle_created = Vehicle.objects.get_or_create(
             license_plate=license_plate,
             defaults={
-                "customer": customer,
                 "vehicle_type": vehicle_type,
             },
         )
-
-        if not vehicle_created and vehicle.customer_id != customer.id:
-            raise ValueError(
-                "Vehicle already belongs to another customer."
-            )
 
         if not vehicle_created and vehicle.vehicle_type != vehicle_type:
             raise ValueError(
@@ -45,7 +39,7 @@ class TicketEntryService:
                 "No parking spot available."
             )
 
-        ticket_serializer = TicketSerializer(data={"vehicle": vehicle.id,"parking_spot": parking_spot.id,})
+        ticket_serializer = TicketSerializer(data={"customer":customer.id, "vehicle": vehicle.id,"parking_spot": parking_spot.id,})
         ticket_serializer.is_valid(raise_exception=True)
         ticket = TicketService.create_ticket(ticket_serializer)
         return {
