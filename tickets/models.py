@@ -2,11 +2,13 @@ from django.db import models
 
 from parking_spots.models import ParkingSpot
 from vehicles.models import Vehicle
-
+from customers.models import Customer
 class TicketStatus(models.TextChoices):
     ACTIVE="active","Active"
     COMPLETED="completed","Completed"
 class Ticket(models.Model):
+    customer = models.ForeignKey(Customer,on_delete=models.PROTECT,related_name="tickets")
+     
     vehicle = models.ForeignKey(
         Vehicle, on_delete=models.CASCADE, related_name="tickets"
     )
