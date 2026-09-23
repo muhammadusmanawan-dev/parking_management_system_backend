@@ -9,7 +9,6 @@ class VehicleSerializer(serializers.ModelSerializer):
 
         fields = [
             "id",
-            "customer",
             "license_plate",
             "vehicle_type",
             "created_at",

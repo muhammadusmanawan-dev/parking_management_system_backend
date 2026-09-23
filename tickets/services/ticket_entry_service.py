@@ -32,17 +32,29 @@ class TicketEntryService:
                 "Vehicle type does not match the registered vehicle."
             )
 
-        parking_spot = ParkingSpot.objects.filter(spot_type=vehicle_type,status=ParkingSpotStatus.AVAILABLE,).first()
+        #for POSTgreSQL
+        #parking_spot = ParkingSpot.objects.select_for_update().filter(spot_type=vehicle_type,status=ParkingSpotStatus.AVAILABLE,).first()
+        # if parking_spot is None: 
+        #     raise ValueError( "No parking spot available." )
+        
 
-        if parking_spot is None:
-            raise ValueError(
-                "No parking spot available."
-            )
+        #for db.sqlite3
+        while True:
+            parking_spot = ParkingSpot.objects.filter( spot_type=vehicle_type, status=ParkingSpotStatus.AVAILABLE, ).first() 
+            if parking_spot is None: 
+                raise ValueError( "No parking spot available." )
+            
+            updated = ParkingSpot.objects.filter( id=parking_spot.id, status=ParkingSpotStatus.AVAILABLE, ).update( status=ParkingSpotStatus.OCCUPIED ) 
+            if updated == 1:
+                break
 
+
+    
         ticket_serializer = TicketSerializer(data={"customer":customer.id, "vehicle": vehicle.id,"parking_spot": parking_spot.id,})
         ticket_serializer.is_valid(raise_exception=True)
         ticket = TicketService.create_ticket(ticket_serializer)
-        return {
+        parking_spot.refresh_from_db()
+        return{
             "customer": customer,
             "vehicle": vehicle,
             "parking_spot": parking_spot,
