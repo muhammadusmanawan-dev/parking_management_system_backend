@@ -52,15 +52,8 @@ class TicketCheckoutView(APIView):
             Ticket,
             id=ticket_id,
         )
-
-        try:
-            ticket = TicketService.checkout_ticket(ticket)
-
-        except ValueError as error:
-            return Response(
-                {"detail": str(error)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        
+        ticket = TicketService.checkout_ticket(ticket)
 
         return Response(
             TicketSerializer(ticket).data,
@@ -72,12 +65,9 @@ class ParkingEntryView(APIView):
     def post(self, request): 
         serializer = ParkingEntrySerializer( data=request.data ) 
         serializer.is_valid( raise_exception=True ) 
-        result = TicketEntryService.create_entry( 
-            name=serializer.validated_data["name"], 
-            phone_number=serializer.validated_data["phone_number"], 
-            license_plate=serializer.validated_data["license_plate"], 
-            vehicle_type=serializer.validated_data["vehicle_type"],
-            ) 
+        result = TicketEntryService.create_entry(
+            **serializer.validated_data
+        )
         
         return Response( { "message": "Vehicle entered successfully.",
                            "customer": { 

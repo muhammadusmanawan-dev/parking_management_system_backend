@@ -7,6 +7,8 @@ from vehicles.models import Vehicle
 from ..serializers import TicketSerializer
 from .ticket_service import TicketService
 
+from config.exception import VehicleTypeMismatch, NoParkingSpotAvailable
+
 
 class TicketEntryService:
 
@@ -28,9 +30,7 @@ class TicketEntryService:
         )
 
         if not vehicle_created and vehicle.vehicle_type != vehicle_type:
-            raise ValueError(
-                "Vehicle type does not match the registered vehicle."
-            )
+            raise VehicleTypeMismatch()
 
         #for POSTgreSQL
         #parking_spot = ParkingSpot.objects.select_for_update().filter(spot_type=vehicle_type,status=ParkingSpotStatus.AVAILABLE,).first()
@@ -42,7 +42,7 @@ class TicketEntryService:
         while True:
             parking_spot = ParkingSpot.objects.filter( spot_type=vehicle_type, status=ParkingSpotStatus.AVAILABLE, ).first() 
             if parking_spot is None: 
-                raise ValueError( "No parking spot available." )
+                raise NoParkingSpotAvailable()
             
             updated = ParkingSpot.objects.filter( id=parking_spot.id, status=ParkingSpotStatus.AVAILABLE, ).update( status=ParkingSpotStatus.OCCUPIED ) 
             if updated == 1:
