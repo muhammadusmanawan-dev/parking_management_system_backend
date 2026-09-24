@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from .models import Payment
 from .serializers import PaymentSerializer
 from .services.payment_manager import PaymentManager
+from config.decorators import handle_exceptions
 
 class PaymentListCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -21,6 +22,7 @@ class PaymentListCreateView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    @handle_exceptions
     def post(self, request):
         serializer = PaymentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -61,6 +63,7 @@ class PaymentDetailView(APIView):
 class PaymentStatusView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @handle_exceptions
     def get(self, request, payment_id):
         payment = get_object_or_404(
             Payment,
