@@ -52,15 +52,8 @@ class TicketCheckoutView(APIView):
             Ticket,
             id=ticket_id,
         )
-
-        try:
-            ticket = TicketService.checkout_ticket(ticket)
-
-        except ValueError as error:
-            return Response(
-                {"detail": str(error)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        
+        ticket = TicketService.checkout_ticket(ticket)
 
         return Response(
             TicketSerializer(ticket).data,
@@ -72,30 +65,39 @@ class ParkingEntryView(APIView):
     def post(self, request): 
         serializer = ParkingEntrySerializer( data=request.data ) 
         serializer.is_valid( raise_exception=True ) 
-        result = TicketEntryService.create_entry( 
-            name=serializer.validated_data["name"], 
-            phone_number=serializer.validated_data["phone_number"], 
-            license_plate=serializer.validated_data["license_plate"], 
-            vehicle_type=serializer.validated_data["vehicle_type"],
-            ) 
-        
-        return Response( { "message": "Vehicle entered successfully.",
-                           "customer": { 
-                               "id": result["customer"].id, 
-                               "name": result["customer"].name, 
-                               "phone_number": result["customer"].phone_number, }, 
-                            "vehicle": {
-                                "id": result["vehicle"].id, 
-                                "license_plate": result["vehicle"].license_plate, 
-                                "vehicle_type": result["vehicle"].vehicle_type, }, 
-                            "parking_spot": {
-                                 "id": result["parking_spot"].id, 
-                                 "spot_number": result["parking_spot"].spot_number, 
-                                 "spot_type": result["parking_spot"].spot_type, 
-                                 "status": result["parking_spot"].status, }, 
-                            "ticket": { 
-                                "id": result["ticket"].id, 
-                                "entry_time": result["ticket"].entry_time, 
-                                "status": result["ticket"].status, },
-                            }, 
-                            status=status.HTTP_201_CREATED, )
+        result = TicketEntryService.create_entry(
+            **serializer.validated_data
+        )
+        customer = result["customer"]
+        vehicle = result["vehicle"]
+        parking_spot = result["parking_spot"]
+        ticket = result["ticket"]
+
+        response_data = {
+                    "message": "Vehicle entered successfully.",
+                    "customer": {
+                        "id": customer.id,
+                        "name": customer.name,
+                        "phone_number": customer.phone_number,
+                    },
+                    "vehicle": {
+                        "id": vehicle.id,
+                        "license_plate": vehicle.license_plate,
+                        "vehicle_type": vehicle.vehicle_type,
+                    },
+                    "parking_spot": {
+                        "id": parking_spot.id,
+                        "spot_number": parking_spot.spot_number,
+                        "spot_type": parking_spot.spot_type,
+                        "status": parking_spot.status,
+                    },
+                    "ticket": {
+                        "id": ticket.id,
+                        "entry_time": ticket.entry_time,
+                        "status": ticket.status,
+                    },
+                }
+        return Response(
+            response_data,
+            status=status.HTTP_201_CREATED,
+        )

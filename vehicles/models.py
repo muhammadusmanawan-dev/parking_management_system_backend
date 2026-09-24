@@ -1,8 +1,5 @@
 from django.db import models
 
-from customers.models import Customer
-
-
 class Vehicle(models.Model):
     VEHICLE_TYPE_CHOICES = [
         ("car", "Car"),

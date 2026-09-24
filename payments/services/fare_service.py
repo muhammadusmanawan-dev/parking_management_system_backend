@@ -1,5 +1,5 @@
 from decimal import Decimal
-
+from config.exception import FareCalculationError
 
 class FareService:
     HOURLY_RATE = Decimal("100.00")
@@ -7,8 +7,7 @@ class FareService:
     @classmethod
     def calculate_fare(cls, ticket):
         if not ticket.exit_time:
-            raise ValueError("Ticket must have an exit time.")
-
+            raise FareCalculationError()
         duration = ticket.exit_time - ticket.entry_time
         total_seconds = duration.total_seconds()
         total_hours = total_seconds / 3600

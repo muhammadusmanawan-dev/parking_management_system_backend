@@ -30,12 +30,6 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         vehicle = attrs.get("vehicle")
-        parking_spot = attrs.get("parking_spot")
-
-        if parking_spot.status != ParkingSpotStatus.AVAILABLE:
-            raise serializers.ValidationError(
-                {"parking_spot": ("This parking spot is not available.")}
-            )
 
         active_ticket = Ticket.objects.filter(
             vehicle=vehicle,
@@ -44,7 +38,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
         if active_ticket:
             raise serializers.ValidationError(
-                {"vehicle": ("This vehicle already has an active ticket.")}
+                {"vehicle": "This vehicle already has an active ticket."}
             )
 
         return attrs

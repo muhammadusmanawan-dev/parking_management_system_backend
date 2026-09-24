@@ -4,6 +4,7 @@ from django.utils import timezone
 from parking_spots.models import ParkingSpotStatus
 from tickets.models import TicketStatus
 
+from config.exception import TicketAlreadyCompleted
 class TicketService:
 
     @staticmethod
@@ -19,7 +20,7 @@ class TicketService:
     @transaction.atomic
     def checkout_ticket(ticket):
         if ticket.status != TicketStatus.ACTIVE:
-            raise ValueError("This ticket has been already completed")
+            raise TicketAlreadyCompleted()
         
         ticket.exit_time = timezone.now()
         ticket.status = TicketStatus.COMPLETED
