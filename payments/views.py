@@ -9,7 +9,6 @@ from .models import Payment
 from .serializers import PaymentSerializer
 from .services.payment_manager import PaymentManager
 from config.decorators import handle_exceptions
-
 class PaymentListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -24,17 +23,17 @@ class PaymentListCreateView(APIView):
 
     @handle_exceptions
     def post(self, request):
-        serializer = PaymentSerializer(data=request.data)
+        serializer=PaymentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        ticket = serializer.validated_data["ticket"]
-        payment_method = serializer.validated_data["payment_method"]
-        
-        payment, result = PaymentManager.create_payment(
-            ticket=ticket,
-            payment_method=payment_method,
-        )
+        ticket=serializer.validated_data["ticket"]
+        payment_method=serializer.validated_data["payment_method"]
 
+        payment, result=PaymentManager.create_payment(
+            ticket=ticket,
+            payment_method=payment_method
+        )
+        
         return Response(
             {
                 "payment": PaymentSerializer(payment).data,

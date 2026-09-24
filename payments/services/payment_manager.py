@@ -1,25 +1,22 @@
 from django.utils import timezone
 
-from ..models import Payment, PaymentStatus
+from ..models import Payment, PaymentStatus, CurrencyType
 from .fare_service import FareService
 from .factory import PaymentServiceFactory
 from config.exception import PaymentAlreadyExists
-
 class PaymentManager:
 
     @staticmethod
     def create_payment(ticket, payment_method):
         if Payment.objects.filter(ticket=ticket).exists():
-            raise PaymentAlreadyExists()    
-            
-        amount = FareService.calculate_fare(ticket)
-
-        service = PaymentServiceFactory.get_service(payment_method)
-
-        result = service.create_payment(
+            raise PaymentAlreadyExists()
+        
+        amount=FareService.calculate_fare(ticket)
+        service=PaymentServiceFactory.get_service(payment_method)
+        result=service.create_payment(
             amount=amount,
-            currency="PKR",
-            reference=f"TICKET-{ticket.id}",
+            currency=CurrencyType.PAKISTANI_RUPEE,
+            reference=f"Ticket#-{ticket.id}"
         )
 
         provider_status = result.get("status")
@@ -39,7 +36,7 @@ class PaymentManager:
         payment = Payment.objects.create(
             ticket=ticket,
             amount=amount,
-            currency="PKR",
+            currency=CurrencyType.PAKISTANI_RUPEE,
             payment_method=payment_method,
             status=payment_status,
             provider_payment_id=result["payment_id"],
