@@ -11,6 +11,7 @@ from .services.ticket_service import TicketService
 
 from .ticket_entry_serializer import ParkingEntrySerializer 
 from .services.ticket_entry_service import TicketEntryService
+from config.decorators import handle_exceptions
 
 class TicketListCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -20,6 +21,7 @@ class TicketListCreateView(APIView):
         serializer = TicketSerializer(tickets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @handle_exceptions
     def post(self,request):
         serializer = TicketSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -47,6 +49,7 @@ class TicketDetailView(APIView):
 class TicketCheckoutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @handle_exceptions
     def post(self, request, ticket_id):
         ticket = get_object_or_404(
             Ticket,
@@ -61,7 +64,8 @@ class TicketCheckoutView(APIView):
         )
 
 class ParkingEntryView(APIView): 
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated]
+    @handle_exceptions
     def post(self, request): 
         serializer = ParkingEntrySerializer( data=request.data ) 
         serializer.is_valid( raise_exception=True ) 
