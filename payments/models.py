@@ -9,6 +9,11 @@ class PaymentStatus(models.TextChoices):
     PENDING="pending", "Pending"
     PAID="paid", "Paid"
     FAILED="failed", "Failed"
+
+class CurrencyType(models.TextChoices):
+    PAKISTANI_RUPEE = "pkr", "PKR"
+    UNITED_STATES_DOLLAR = "usd", "USD"
+    
 class Payment(models.Model):
 
     ticket = models.OneToOneField(
@@ -22,7 +27,8 @@ class Payment(models.Model):
     )
     currency = models.CharField(
         max_length=3,
-        default="PKR",
+        choices=CurrencyType.choices,
+        default=CurrencyType.PAKISTANI_RUPEE,
     )
 
     payment_method = models.CharField(
