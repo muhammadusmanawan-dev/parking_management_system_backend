@@ -2,7 +2,7 @@ from decimal import Decimal
 from config.exception import FareCalculationError
 
 class FareService:
-    HOURLY_RATE = Decimal("100.00")
+    HOURLY_RATE = Decimal("1000.00")
 
     @classmethod
     def calculate_fare(cls, ticket):
